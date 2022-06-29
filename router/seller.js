@@ -72,7 +72,7 @@ router.post("/login", async (req, res, next) => {
     if (!email_id || !password) {
       return res
         .status(401)
-        .json({ message: "Enter Valid Email and Password!" });
+        .json({ message: "Enter Email and Password!" });
     }
 
     const seller = await Seller.findOne({ email_id: email_id });
