@@ -67,6 +67,9 @@ router.post("/login", async (req, res, next) => {
   try {
     const { email_id, password } = req.body;
     // if email and password not exist
+
+    
+    console.log("email_id "+email_id);
     if (!email_id || !password) {
       return res
         .status(401)
@@ -97,11 +100,5 @@ router.post("/login", async (req, res, next) => {
     return res.status(400).json({ message: error.message });
   }
 });
-
-
-
-
-
-
 
 module.exports = router;

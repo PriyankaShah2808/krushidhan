@@ -13,6 +13,8 @@ const generateToken = (id) => {
   });
 };
 
+
+
 // Register
 router.post("/register", async (req, res) => {
   try {
@@ -69,6 +71,7 @@ router.post("/login", async (req, res, next) => {
   try {
     const { email_id, password } = req.body;
     // if email and password not exist
+    //console.log("email_id "+email_id);
     if (!email_id || !password) {
       return res
         .status(401)
@@ -88,10 +91,16 @@ router.post("/login", async (req, res, next) => {
     }
 
     if (seller && isMatch) {
-      res.status(201).json({
+      res.status(201).json({message: "Valid Email or Password!!",
         email_id: seller.email_id,
         token: generateToken(seller._id),
+      
       });
+      /*
+      const decoded = jwt.verify(token, "your secret or key");  
+      var userId = decoded.seller.id  
+      console.log(userId)  
+      */
     } else {
       res.status(401).json({ message: "Invalid Email or Password" });
     }
@@ -103,6 +112,7 @@ router.post("/login", async (req, res, next) => {
 router.get("/view", async (req, res) => {
   const seller= await Seller.find();
   res.status(200).send(seller);
+  console.log("Hello world");
 });
 
 
