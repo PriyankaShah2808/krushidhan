@@ -103,6 +103,7 @@ router.post("/login", async (req, res, next) => {
 router.get("/view", async (req, res) => {
   const seller= await Seller.find();
   res.status(200).send(seller);
+  write("Welcome to the Krushidhan");
 });
 
 
