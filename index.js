@@ -14,7 +14,7 @@ mongoose.connect("mongodb://dbuser:dbuser@krushidhan-shard-00-00.3nukz.mongodb.n
 }).catch( (err) => {
     console.log('Database Not Connected' + err);
 });
-
+console.log("Welcome to krushidhan App!!!");
 // import routes
 const sellerRouter = require("./router/seller");
 const customerRouter = require("./router/customer");
