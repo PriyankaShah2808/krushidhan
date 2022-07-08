@@ -25,6 +25,8 @@ const customerSchema = new mongoose.Schema({
   },
   pin_code: {
     type: Number,
+    min: 100000,
+    max: 999999,
     required: true,
   },
   address: {

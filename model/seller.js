@@ -34,6 +34,8 @@ const sellerSchema = new mongoose.Schema({
   },
   pin_codes: {
     type: Array,
+    min: 100000,
+    max: 999999,
     required: true,
   },
   address: {

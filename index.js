@@ -15,9 +15,12 @@ mongoose.connect("mongodb://dbuser:dbuser@krushidhan-shard-00-00.3nukz.mongodb.n
     console.log('Database Not Connected' + err);
 });
 console.log("Welcome to krushidhan App!!!");
+
 // import routes
+
 const sellerRouter = require("./router/seller");
 const customerRouter = require("./router/customer");
+const productRouter = require("./router/product");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -28,7 +31,8 @@ app.get('/', (req, res) => {
 });
 
 app.use("/seller", sellerRouter);
-app.use("/customer", customerRouter);
+app.use("/customer",customerRouter);
+app.use("/product",productRouter);
 
 
 app.listen(port, () => {

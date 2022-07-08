@@ -1,20 +1,25 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const protectRoute = require("../middleware/auth");
 const router = express.Router();
 
 //seller model import
 const Seller = require("../model/seller");
 
 // generate token function
+
 const generateToken = (id) => {
   return jwt.sign({ id }, "secret@@123", {
     expiresIn: "36h",
   });
 };
 
-
-
+/*
+const verifyToken = (token) => {
+  return decode = jwt.verify(token,"secret@@123")
+}
+*/
 // Register
 router.post("/register", async (req, res) => {
   try {
@@ -31,7 +36,7 @@ router.post("/register", async (req, res) => {
     } = req.body;
     const seller_exist = await Seller.findOne({ email_id: email_id });
     if (seller_exist) {
-      return res.status(401).json({ message: "Seller Already Exist!!" });
+      return res.status(401).json({ message: "Seller Already Exist!!",status: false });
     }
     
     // if(password !== confirm_password) {
@@ -59,61 +64,69 @@ router.post("/register", async (req, res) => {
           .status(401)
           .json({ message: "Seller Not Registered!", error: err.message });
       }
-      return res.status(201).json({ message: "Seller Register Successfully!" });
+      return res.status(201).json({ message: "Seller Register Successfully!",status: true });
     });
   } catch (err) {
     return res.status(401).json(err.message);
   }
 });
 
+
+
+
 // Login
 router.post("/login", async (req, res, next) => {
   try {
     const { email_id, password } = req.body;
-    // if email and password not exist
-    //console.log("email_id "+email_id);
     if (!email_id || !password) {
       return res
         .status(401)
-        .json({ message: "Enter Email and Password!" });
+        .json({ message: "Please enter Email and Password!",status: false });
     }
 
     const seller = await Seller.findOne({ email_id: email_id });
 
     if (!seller) {
-      return res.status(401).json({ message: "Invalid Email or Password!!" });
+      return res.status(401).json({ message: "Invalid Email or Password!!" ,status: false});
     }
 
     let isMatch = bcrypt.compareSync(password, seller.password);
 
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid Email or Password!!" });
+      return res.status(401).json({ message: "Invalid Email or Password!!",status: false });
     }
 
     if (seller && isMatch) {
-      res.status(201).json({message: "Valid Email or Password!!",
+      res.status(201).json({message: "Login Successfull!!",
         email_id: seller.email_id,
         token: generateToken(seller._id),
+        status: true,
+        //decode:verifyToken(token),
+        id:seller._id
+        
+      }); 
+     
       
-      });
-      /*
-      const decoded = jwt.verify(token, "your secret or key");  
-      var userId = decoded.seller.id  
-      console.log(userId)  
-      */
     } else {
-      res.status(401).json({ message: "Invalid Email or Password" });
+      res.status(401).json({ message: "Invalid Email or Password" ,status:false});
     }
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
 });
 
-router.get("/view", async (req, res) => {
-  const seller= await Seller.find();
-  res.status(200).send(seller);
-  console.log("Hello world");
-});
 
+//const decoded = jwt.verify(token,"secret@@123");
+//console.log(decoded);
+
+
+
+// View seller's profile by ID
+router.get("/view/:id", protectRoute ,async (req, res) => {
+  //const _id = req.params;
+  console.log(req.user);
+  const seller = await Seller.find({_id:req.params._id});
+  res.status(200).json(req.user);
+});
 
 module.exports = router;
